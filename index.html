@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Go Out With Me?</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cute+Font&family=Indie+Flower&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Indie Flower', cursive;
+            background: linear-gradient(135deg, #FFD1DC, #FFEBCD);
+            overflow: hidden;
+        }
+        .container {
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 30px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            max-width: 90%;
+            width: 400px;
+        }
+        #question {
+            font-size: 28px;
+            margin-bottom: 30px;
+            color: #FF69B4;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+        .btn {
+            font-family: 'Cute Font', cursive;
+            padding: 15px 30px;
+            font-size: 20px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transform-origin: center;
+        }
+        #yesBtn {
+            background-color: #FF1493;
+            color: white;
+        }
+        #noBtn {
+            background-color: #1E90FF;
+            color: white;
+        }
+        #canvas {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 300px;
+            pointer-events: none;
+        }
+        #cringeAlert {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(0,0,0,0.8);
+            z-index: 1000;
+        }
+        #cringeText {
+            font-size: 5vw;
+            color: red;
+            font-weight: bold;
+            opacity: 0;
+            transform: scale(0.1);
+            transition: all 1s ease;
+        }
+        #videoButton {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+            padding: 15px 30px;
+            background-color: #FF1493;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        @media screen and (max-width: 480px) {
+            .container {
+                width: 95%;
+                padding: 20px;
+            }
+            #question {
+                font-size: 22px;
+            }
+            .btn {
+                padding: 10px 20px;
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="question">Do you wanna go out on a date with me?</div>
+        <div class="button-container">
+            <button id="yesBtn" class="btn">Yes</button>
+            <button id="noBtn" class="btn">No</button>
+        </div>
+    </div>
+    <canvas id="canvas"></canvas>
+
+    <div id="cringeAlert">
+        <div id="cringeText">CRINGE ALERT!!</div>
+    </div>
+
+    <button id="videoButton">Click me</button>
+
+    <script>
+        const questions = [
+            "Do you wanna go out on a date with me?",
+            "Really??",
+            "Come on!",
+            "Pretty please?",
+            "After all this effort?",
+            "Are you sure?",
+            "Not even a chance?",
+            "Seriously?!",
+            "Pretty pretty please?",
+            "Last chance!",
+            "You can't say no forever!"
+        ];
+
+        let currentQuestionIndex = 0;
+        let yesBtnScale = 1;
+        let noBtnScale = 1;
+
+        const questionElement = document.getElementById('question');
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const cringeAlert = document.getElementById('cringeAlert');
+        const cringeText = document.getElementById('cringeText');
+        const videoButton = document.getElementById('videoButton');
+
+        canvas.width = window.innerWidth;
+        canvas.height = 300;
+
+        noBtn.addEventListener('click', () => {
+            currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
+            questionElement.textContent = questions[currentQuestionIndex];
+            
+            yesBtnScale += 0.2;
+            yesBtn.style.transform = `scale(${yesBtnScale})`;
+            
+            noBtnScale = Math.max(0.1, noBtnScale - 0.2);
+            noBtn.style.transform = `scale(${noBtnScale})`;
+            
+            if (noBtnScale < 0.3) {
+                noBtn.style.padding = `${5 * noBtnScale}px ${10 * noBtnScale}px`;
+            }
+        });
+
+        yesBtn.addEventListener('click', () => {
+            createFireworks();
+            setTimeout(showCringeAlert, 2000);
+        });
+
+        videoButton.addEventListener('click', () => {
+            window.open('https://drive.google.com/file/d/1N_BuRxtJnJY7m9TVLqx4ldeTz4RxrRCr/view?usp=drive_link', '_blank');
+        });
+
+        function showCringeAlert() {
+            cringeAlert.style.display = 'flex';
+            setTimeout(() => {
+                cringeText.style.opacity = 1;
+                cringeText.style.transform = 'scale(1)';
+            }, 100);
+
+            setTimeout(() => {
+                videoButton.style.display = 'block';
+            }, 2000);
+        }
+
+        function createFireworks() {
+            const fireworkCount = 10;
+            for(let i = 0; i < fireworkCount; i++) {
+                setTimeout(launchFirework, i * 200);
+            }
+        }
+
+        function launchFirework() {
+            const particleCount = 50;
+            const x = Math.random() * canvas.width;
+            const colors = ['#FF69B4', '#FF1493', '#00BFFF', '#1E90FF', '#FF4500'];
+
+            for(let i = 0; i < particleCount; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 5 + 2;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+
+                createParticle(x, canvas.height, angle, speed, color);
+            }
+        }
+
+        function createParticle(x, y, angle, speed, color) {
+            let particleX = x;
+            let particleY = y;
+            const gravity = 0.2;
+            let vx = Math.cos(angle) * speed;
+            let vy = Math.sin(angle) * speed * -1;
+
+            function draw() {
+                ctx.beginPath();
+                ctx.arc(particleX, particleY, 3, 0, Math.PI * 2);
+                ctx.fillStyle = color;
+                ctx.fill();
+            }
+
+            function update() {
+                particleX += vx;
+                particleY += vy;
+                vy += gravity;
+
+                if(particleY < canvas.height) {
+                    draw();
+                    requestAnimationFrame(update);
+                }
+            }
+
+            update();
+        }
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = 300;
+        });
+    </script>
+</body>
+</html>
