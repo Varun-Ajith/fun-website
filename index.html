@@ -69,40 +69,39 @@
             height: 300px;
             pointer-events: none;
         }
-        #cringeAlert {
+        #videoContainer {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+            background-color: rgba(0,0,0,0.9);
             display: none;
             justify-content: center;
             align-items: center;
-            background-color: rgba(0,0,0,0.8);
-            z-index: 1000;
+            z-index: 2000;
         }
-        #cringeText {
-            font-size: 5vw;
-            color: red;
-            font-weight: bold;
-            opacity: 0;
-            transform: scale(0.1);
-            transition: all 1s ease;
+        #videoContainer video {
+            max-width: 90%;
+            max-height: 90%;
+            box-shadow: 0 0 30px rgba(255,255,255,0.5);
         }
-        #videoButton {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            display: none;
-            padding: 15px 30px;
-            background-color: #FF1493;
+        #closeVideoBtn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: red;
             color: white;
             border: none;
-            border-radius: 50px;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
             font-size: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             cursor: pointer;
-            z-index: 1001;
+            z-index: 2001;
         }
         @media screen and (max-width: 480px) {
             .container {
@@ -129,11 +128,13 @@
     </div>
     <canvas id="canvas"></canvas>
 
-    <div id="cringeAlert">
-        <div id="cringeText">CRINGE ALERT!!</div>
+    <div id="videoContainer">
+        <button id="closeVideoBtn">X</button>
+        <video controls autoplay>
+            <source src="rom.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
     </div>
-
-    <button id="videoButton">Click me</button>
 
     <script>
         const questions = [
@@ -159,9 +160,8 @@
         const noBtn = document.getElementById('noBtn');
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
-        const cringeAlert = document.getElementById('cringeAlert');
-        const cringeText = document.getElementById('cringeText');
-        const videoButton = document.getElementById('videoButton');
+        const videoContainer = document.getElementById('videoContainer');
+        const closeVideoBtn = document.getElementById('closeVideoBtn');
 
         canvas.width = window.innerWidth;
         canvas.height = 300;
@@ -183,24 +183,14 @@
 
         yesBtn.addEventListener('click', () => {
             createFireworks();
-            setTimeout(showCringeAlert, 2000);
-        });
-
-        videoButton.addEventListener('click', () => {
-            window.open('https://drive.google.com/file/d/1N_BuRxtJnJY7m9TVLqx4ldeTz4RxrRCr/view?usp=drive_link', '_blank');
-        });
-
-        function showCringeAlert() {
-            cringeAlert.style.display = 'flex';
             setTimeout(() => {
-                cringeText.style.opacity = 1;
-                cringeText.style.transform = 'scale(1)';
-            }, 100);
-
-            setTimeout(() => {
-                videoButton.style.display = 'block';
+                videoContainer.style.display = 'flex';
             }, 2000);
-        }
+        });
+
+        closeVideoBtn.addEventListener('click', () => {
+            videoContainer.style.display = 'none';
+        });
 
         function createFireworks() {
             const fireworkCount = 10;
