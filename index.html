@@ -15,52 +15,47 @@
         }
         
         body {
-            background: #0a0a12;
+            background: #121212;
             height: 100vh;
             overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: #f0f0f0;
+            color: #e0e0e0;
         }
         
-        .container {
+        .game-container {
             width: 100%;
             height: 100%;
             position: relative;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 20px;
         }
         
         .interaction-area {
-            position: relative;
+            position: absolute;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.3s ease;
             display: flex;
             justify-content: center;
             align-items: center;
             text-align: center;
             font-weight: 500;
-            border-radius: 12px;
+            border-radius: 8px;
             overflow: hidden;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(8px);
-            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
-            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            padding: 20px;
             max-width: 90%;
             z-index: 10;
-            width: 300px;
-            height: 150px;
         }
         
         .interaction-text {
             pointer-events: none;
-            font-size: 1.4rem;
-            transition: transform 0.3s ease;
+            font-size: 1.2rem;
         }
         
         .particle {
@@ -72,14 +67,8 @@
         }
         
         @keyframes fade-out {
-            0% { 
-                opacity: 1; 
-                transform: translate(0, 0) scale(1); 
-            }
-            100% { 
-                opacity: 0; 
-                transform: translate(var(--tx), var(--ty)) scale(0); 
-            }
+            0% { opacity: 1; transform: translate(0, 0) scale(1); }
+            100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); }
         }
         
         .counter {
@@ -87,261 +76,150 @@
             top: 20px;
             right: 20px;
             font-size: 1rem;
-            color: rgba(255, 255, 255, 0.6);
+            color: rgba(255, 255, 255, 0.5);
             z-index: 5;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 6px 12px;
-            border-radius: 20px;
         }
         
-        .title {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            font-size: 1rem;
-            color: rgba(255, 255, 255, 0.6);
-            z-index: 5;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-weight: 400;
-        }
-        
-        .background-element {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(60, 120, 216, 0.1);
-            filter: blur(60px);
-            z-index: 0;
-        }
-        
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
+        @media (max-width: 600px) {
             .interaction-area {
-                width: 280px;
-                height: 140px;
-                padding: 25px;
-            }
-            
-            .interaction-text {
-                font-size: 1.3rem;
-            }
-        }
-        
-        @media (max-width: 617px) {
-            .interaction-area {
-                width: 240px;
-                height: 130px;
-                padding: 20px;
-            }
-            
-            .interaction-text {
-                font-size: 1.2rem;
-            }
-        }
-        
-        @media (max-width: 450px) {
-            .interaction-area {
-                width: 220px;
-                height: 120px;
-                padding: 18px;
-            }
-            
-            .interaction-text {
-                font-size: 1.1rem;
-            }
-            
-            .counter, .title {
-                font-size: 0.9rem;
-            }
-        }
-        
-        @media (max-width: 368px) {
-            .interaction-area {
-                width: 200px;
-                height: 110px;
+                width: 85% !important;
+                height: auto;
+                min-height: 120px;
                 padding: 15px;
             }
             
             .interaction-text {
                 font-size: 1rem;
             }
-            
-            .counter, .title {
-                font-size: 0.85rem;
-            }
-        }
-        
-        @media (min-width: 1024px) {
-            .interaction-area {
-                width: 340px;
-                height: 170px;
-            }
-            
-            .interaction-text {
-                font-size: 1.6rem;
-            }
         }
     </style>
 </head>
 <body>
-    <div class="title">Pointless Interaction</div>
-    <div class="counter" id="counter">0</div>
-    
-    <div class="container">
-        <div class="interaction-area" id="interactionElement">
-            <div class="interaction-text" id="interactionText">Touch Me</div>
-        </div>
+    <div class="counter" id="counter">Interactions: 0</div>
+    <div class="game-container" id="gameContainer">
+        <!-- Interaction area will be placed here -->
     </div>
     
     <script>
-        // Interaction behaviors
-        const behaviors = [
+        // List of interaction types
+        const interactions = [
             {
                 text: "Tap Here",
-                action: (element, textElement) => {
+                width: "200px",
+                height: "80px",
+                action: (element) => {
                     moveToRandomPosition(element);
-                    createParticles(element, 12);
-                    textElement.textContent = "Again!";
+                    createParticles(element, 10);
                 }
             },
             {
                 text: "Why?",
-                action: (element, textElement) => {
+                width: "180px",
+                height: "100px",
+                action: (element) => {
                     element.style.transform = `rotate(${Math.random() * 20 - 10}deg)`;
-                    element.style.background = `rgba(${Math.floor(Math.random() * 100)}, ${Math.floor(Math.random() * 150)}, ${Math.floor(Math.random() * 200)}, 0.15)`;
-                    textElement.style.transform = "scale(1.2)";
-                    setTimeout(() => textElement.style.transform = "scale(1)", 300);
+                    changeBackgroundShade();
                     createParticles(element, 15);
                 }
             },
             {
                 text: "Don't Stop",
-                action: (element, textElement) => {
-                    const newWidth = Math.max(200, Math.min(window.innerWidth - 40, Math.random() * 300 + 150));
-                    const newHeight = Math.max(100, Math.min(window.innerHeight - 100, Math.random() * 150 + 80));
-                    
-                    element.style.width = `${newWidth}px`;
-                    element.style.height = `${newHeight}px`;
+                width: "220px",
+                height: "70px",
+                action: (element) => {
+                    element.style.width = `${Math.random() * 100 + 150}px`;
+                    element.style.height = `${Math.random() * 50 + 60}px`;
                     moveToRandomPosition(element);
-                    createParticles(element, 10);
-                    textElement.textContent = "Keep Going";
+                    createParticles(element, 8);
                 }
             },
             {
                 text: "Pointless",
-                action: (element, textElement) => {
+                width: "160px",
+                height: "120px",
+                action: (element) => {
                     element.style.borderRadius = `${Math.random() * 50}%`;
                     element.style.opacity = `${0.7 + Math.random() * 0.3}`;
-                    textElement.textContent = "Exactly";
-                    createParticles(element, 14);
+                    createParticles(element, 12);
                 }
             },
             {
                 text: "Continue",
-                action: (element, textElement) => {
-                    element.style.transform = `scale(${0.85 + Math.random() * 0.3})`;
+                width: "190px",
+                height: "90px",
+                action: (element) => {
+                    element.style.transform = `scale(${0.8 + Math.random() * 0.4})`;
                     moveToRandomPosition(element);
-                    createParticles(element, 12);
-                    textElement.textContent = "More!";
+                    createParticles(element, 10);
                 }
             },
             {
                 text: "Why Not?",
-                action: (element, textElement) => {
+                width: "170px",
+                height: "110px",
+                action: (element) => {
                     const colors = ['#ff6b6b', '#4ecdc4', '#ffbe0b', '#9b5de5', '#00bbf9'];
-                    const color = colors[Math.floor(Math.random() * colors.length)];
-                    element.style.background = color;
+                    element.style.background = colors[Math.floor(Math.random() * colors.length)];
                     element.style.borderColor = 'rgba(255, 255, 255, 0.3)';
-                    textElement.textContent = "Indeed";
-                    createParticles(element, 16);
+                    createParticles(element, 15);
                 }
             }
         ];
         
         let interactionCount = 0;
-        let currentBehavior = 0;
         const counterElement = document.getElementById('counter');
-        const interactionElement = document.getElementById('interactionElement');
-        const interactionText = document.getElementById('interactionText');
-        
-        // Create background elements
-        function createBackground() {
-            const container = document.querySelector('.container');
-            const sizes = [200, 300, 400];
-            const colors = [
-                'rgba(60, 120, 216, 0.1)',
-                'rgba(155, 93, 229, 0.1)',
-                'rgba(255, 107, 107, 0.1)',
-                'rgba(78, 205, 196, 0.1)'
-            ];
-            
-            for (let i = 0; i < 4; i++) {
-                const el = document.createElement('div');
-                el.className = 'background-element';
-                el.style.width = `${sizes[Math.floor(Math.random() * sizes.length)]}px`;
-                el.style.height = el.style.width;
-                el.style.background = colors[Math.floor(Math.random() * colors.length)];
-                el.style.top = `${Math.random() * 100}%`;
-                el.style.left = `${Math.random() * 100}%`;
-                container.appendChild(el);
-            }
-        }
         
         // Initialize the interaction
         function init() {
-            createBackground();
-            currentBehavior = Math.floor(Math.random() * behaviors.length);
-            interactionText.textContent = behaviors[currentBehavior].text;
+            const gameContainer = document.getElementById('gameContainer');
             
-            // Position element in center
-            positionCenter();
+            // Create a random interaction
+            const randomInteraction = interactions[Math.floor(Math.random() * interactions.length)];
+            const interactionElement = document.createElement('div');
+            interactionElement.className = 'interaction-area';
+            interactionElement.style.width = randomInteraction.width;
+            interactionElement.style.height = randomInteraction.height;
+            interactionElement.innerHTML = `<div class="interaction-text">${randomInteraction.text}</div>`;
+            
+            // Position initially in center
+            positionCenter(interactionElement);
             
             // Add event listeners
-            interactionElement.addEventListener('click', handleInteraction);
+            interactionElement.addEventListener('click', () => {
+                interactionCount++;
+                counterElement.textContent = `Interactions: ${interactionCount}`;
+                randomInteraction.action(interactionElement);
+            });
+            
             interactionElement.addEventListener('touchstart', (e) => {
                 e.preventDefault();
-                handleInteraction();
+                interactionCount++;
+                counterElement.textContent = `Interactions: ${interactionCount}`;
+                randomInteraction.action(interactionElement);
             });
-        }
-        
-        // Handle interaction
-        function handleInteraction() {
-            interactionCount++;
-            counterElement.textContent = interactionCount;
-            behaviors[currentBehavior].action(interactionElement, interactionText);
             
-            // Change to a different random behavior for next time
-            let newBehavior;
-            do {
-                newBehavior = Math.floor(Math.random() * behaviors.length);
-            } while (newBehavior === currentBehavior && behaviors.length > 1);
-            
-            currentBehavior = newBehavior;
-            setTimeout(() => {
-                interactionText.textContent = behaviors[currentBehavior].text;
-            }, 300);
+            gameContainer.appendChild(interactionElement);
         }
         
         // Position element in center
-        function positionCenter() {
-            const container = document.querySelector('.container');
+        function positionCenter(element) {
+            const container = document.getElementById('gameContainer');
             const containerWidth = container.clientWidth;
             const containerHeight = container.clientHeight;
             
-            const elementWidth = interactionElement.offsetWidth;
-            const elementHeight = interactionElement.offsetHeight;
+            const elementWidth = element.offsetWidth;
+            const elementHeight = element.offsetHeight;
             
             const centerX = (containerWidth - elementWidth) / 2;
             const centerY = (containerHeight - elementHeight) / 2;
             
-            interactionElement.style.left = `${centerX}px`;
-            interactionElement.style.top = `${centerY}px`;
+            element.style.left = `${centerX}px`;
+            element.style.top = `${centerY}px`;
         }
         
         // Move element to a random position
         function moveToRandomPosition(element) {
-            const container = document.querySelector('.container');
+            const container = document.getElementById('gameContainer');
             const containerWidth = container.clientWidth;
             const containerHeight = container.clientHeight;
             
@@ -351,22 +229,21 @@
             const maxX = containerWidth - elementWidth;
             const maxY = containerHeight - elementHeight;
             
-            // Ensure we don't go off screen
             const safeX = Math.max(20, Math.min(maxX - 20, Math.random() * maxX));
             const safeY = Math.max(20, Math.min(maxY - 20, Math.random() * maxY));
             
-            element.style.transition = 'all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            element.style.transition = 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
             element.style.left = `${safeX}px`;
             element.style.top = `${safeY}px`;
             
             setTimeout(() => {
                 element.style.transition = '';
-            }, 500);
+            }, 400);
         }
         
         // Create particles effect
         function createParticles(element, count) {
-            const container = document.querySelector('.container');
+            const container = document.getElementById('gameContainer');
             const rect = element.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
             const centerY = rect.top + rect.height / 2;
@@ -377,7 +254,7 @@
                 const particle = document.createElement('div');
                 particle.className = 'particle';
                 
-                const size = Math.random() * 12 + 4;
+                const size = Math.random() * 10 + 5;
                 particle.style.width = `${size}px`;
                 particle.style.height = `${size}px`;
                 
@@ -385,7 +262,7 @@
                 particle.style.backgroundColor = color;
                 
                 const angle = Math.random() * Math.PI * 2;
-                const distance = Math.random() * 80 + 40;
+                const distance = Math.random() * 50 + 30;
                 
                 const tx = Math.cos(angle) * distance;
                 const ty = Math.sin(angle) * distance;
@@ -402,6 +279,12 @@
                     particle.remove();
                 }, 1000);
             }
+        }
+        
+        // Change background shade slightly
+        function changeBackgroundShade() {
+            const shades = ['#121212', '#131313', '#111111', '#141414'];
+            document.body.style.background = shades[Math.floor(Math.random() * shades.length)];
         }
         
         // Start immediately
