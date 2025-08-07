@@ -2,47 +2,451 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Special Invitation</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Brain Rot Terminal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            touch-action: manipulation;
+            font-family: 'Courier New', monospace;
+        }
+        
+        body {
+            background: #0f0f23;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #00ff41;
+            position: relative;
+        }
+        
+        #matrix-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        .game-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+            perspective: 1000px;
+        }
+        
+        .game {
+            position: absolute;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-weight: bold;
+            border-radius: 4px;
+            padding: 20px;
+            overflow: hidden;
+            background: rgba(0, 20, 10, 0.7);
+            border: 1px solid #00ff41;
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+            text-shadow: 0 0 5px rgba(0, 255, 65, 0.8);
+        }
+        
+        .game-content {
+            pointer-events: none;
+            z-index: 2;
+            font-size: 1.2rem;
+        }
+        
+        .game-1 {
+            width: 220px;
+            height: 80px;
+            transform: rotate(5deg);
+        }
+        
+        .game-2 {
+            width: 200px;
+            height: 120px;
+            transform: rotate(-3deg);
+        }
+        
+        .game-3 {
+            width: 240px;
+            height: 100px;
+            transform: rotate(7deg);
+        }
+        
+        .game-4 {
+            width: 180px;
+            height: 140px;
+            transform: rotate(-5deg);
+        }
+        
+        .game-5 {
+            width: 260px;
+            height: 90px;
+            transform: rotate(3deg);
+        }
+        
+        .game-6 {
+            width: 200px;
+            height: 160px;
+            transform: rotate(-8deg);
+        }
+        
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        .spin {
+            animation: spin 5s linear infinite;
+        }
+        
+        .shake {
+            animation: shake 0.5s infinite;
+        }
+        
+        .glitch {
+            position: relative;
+        }
+        
+        .glitch::before {
+            content: attr(data-text);
+            position: absolute;
+            left: -2px;
+            text-shadow: 2px 0 #ff00c1;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+        
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            left: 2px;
+            text-shadow: -2px 0 #00fff9;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) rotate(5deg); }
+            50% { transform: translateY(-15px) rotate(-3deg); }
+            100% { transform: translateY(0) rotate(5deg); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+            100% { transform: translateX(0); }
+        }
+        
+        @keyframes glitch-anim {
+            0% { clip: rect(32px, 9999px, 28px, 0); }
+            5% { clip: rect(13px, 9999px, 80px, 0); }
+            10% { clip: rect(43px, 9999px, 74px, 0); }
+            15% { clip: rect(51px, 9999px, 60px, 0); }
+            20% { clip: rect(31px, 9999px, 14px, 0); }
+            25% { clip: rect(19px, 9999px, 28px, 0); }
+            30% { clip: rect(61px, 9999px, 78px, 0); }
+            35% { clip: rect(84px, 9999px, 7px, 0); }
+            40% { clip: rect(28px, 9999px, 99px, 0); }
+            45% { clip: rect(4px, 9999px, 40px, 0); }
+            50% { clip: rect(76px, 9999px, 52px, 0); }
+            55% { clip: rect(23px, 9999px, 24px, 0); }
+            60% { clip: rect(90px, 9999px, 99px, 0); }
+            65% { clip: rect(91px, 9999px, 58px, 0); }
+            70% { clip: rect(90px, 9999px, 73px, 0); }
+            75% { clip: rect(11px, 9999px, 52px, 0); }
+            80% { clip: rect(57px, 9999px, 81px, 0); }
+            85% { clip: rect(31px, 9999px, 20px, 0); }
+            90% { clip: rect(30px, 9999px, 1px, 0); }
+            95% { clip: rect(8px, 9999px, 60px, 0); }
+            100% { clip: rect(80px, 9999px, 20px, 0); }
+        }
+        
+        @keyframes glitch-anim2 {
+            0% { clip: rect(65px, 9999px, 100px, 0); }
+            5% { clip: rect(52px, 9999px, 74px, 0); }
+            10% { clip: rect(79px, 9999px, 85px, 0); }
+            15% { clip: rect(75px, 9999px, 5px, 0); }
+            20% { clip: rect(67px, 9999px, 61px, 0); }
+            25% { clip: rect(14px, 9999px, 79px, 0); }
+            30% { clip: rect(1px, 9999px, 66px, 0); }
+            35% { clip: rect(86px, 9999px, 30px, 0); }
+            40% { clip: rect(23px, 9999px, 98px, 0); }
+            45% { clip: rect(85px, 9999px, 72px, 0); }
+            50% { clip: rect(71px, 9999px, 75px, 0); }
+            55% { clip: rect(2px, 9999px, 48px, 0); }
+            60% { clip: rect(30px, 9999px, 16px, 0); }
+            65% { clip: rect(59px, 9999px, 50px, 0); }
+            70% { clip: rect(41px, 9999px, 62px, 0); }
+            75% { clip: rect(2px, 9999px, 82px, 0); }
+            80% { clip: rect(47px, 9999px, 73px, 0); }
+            85% { clip: rect(3px, 9999px, 27px, 0); }
+            90% { clip: rect(26px, 9999px, 55px, 0); }
+            95% { clip: rect(42px, 9999px, 97px, 0); }
+            100% { clip: rect(38px, 9999px, 49px, 0); }
+        }
+        
+        .binary-rain {
+            position: absolute;
+            font-family: 'Courier New', monospace;
+            color: rgba(0, 255, 65, 0.7);
+            font-size: 14px;
+            z-index: 1;
+            animation: fall linear forwards;
+        }
+        
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .game {
+                width: 80% !important;
+                max-width: 300px;
+                font-size: 0.9rem;
+            }
+            
+            .game-1, .game-2, .game-3, 
+            .game-4, .game-5, .game-6 {
+                height: auto;
+                min-height: 80px;
+                padding: 15px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <div class="question-container">
-            <h1 class="header-text">Do you wanna go out with me?</h1>
-            <h2 class="subheader-text">Are you free Saturday?</h2>
-        </div>
-        
-        <div class="gif-container">
-            <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExcDdtZ2JiZDR0a3lvMWF40G8yc3p6Ymdvd3g2d245amdveDhyYmx6eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/cLS1cfxvGOPVpf9g3y/giphy.gif" alt="Cute animated illustration">
-        </div>
-        
-        <div class="buttons-container">
-            <button class="btn yes-btn" id="yesButton" onclick="nextPage()">Yes</button>
-            <button class="btn no-btn" id="noButton" onmouseover="moveButton()">No</button>
-        </div>
+    <canvas id="matrix-canvas"></canvas>
+    <div class="game-container" id="gameContainer">
+        <!-- Games will be dynamically added here -->
     </div>
-
+    
     <script>
-        function nextPage() {
-            window.location.href = "yes.html";
+        // Matrix background effect
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        const chars = "01010101010101010101010101";
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+        
+        const drops = [];
+        for(let i = 0; i < columns; i++) {
+            drops[i] = 1;
         }
-
-        function moveButton() {
-            const noBtn = document.getElementById('noButton');
-            const maxX = window.innerWidth - noBtn.offsetWidth - 50;
-            const maxY = window.innerHeight - noBtn.offsetHeight - 50;
+        
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(15, 15, 35, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // Ensure the button stays at least 20px from the edges
-            const x = Math.max(20, Math.min(maxX, Math.random() * maxX));
-            const y = Math.max(20, Math.min(maxY, Math.random() * maxY));
+            ctx.fillStyle = '#00ff41';
+            ctx.font = fontSize + 'px monospace';
             
-            noBtn.style.left = `${x}px`;
-            noBtn.style.top = `${y}px`;
+            for(let i = 0; i < drops.length; i++) {
+                const text = chars[Math.floor(Math.random() * chars.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                
+                if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                
+                drops[i]++;
+            }
         }
+        
+        setInterval(drawMatrix, 33);
+        
+        // List of brain rot mini-games
+        const games = [
+            {
+                id: 1,
+                text: "CLICK TO INITIATE",
+                class: "game-1 floating",
+                action: (element) => {
+                    moveRandomly(element);
+                    createBinaryRain();
+                }
+            },
+            {
+                id: 2,
+                text: "ACCESS DENIED",
+                class: "game-2 pulse",
+                action: (element) => {
+                    element.classList.toggle('shake');
+                    setTimeout(() => element.classList.toggle('shake'), 500);
+                    createBinaryRain();
+                }
+            },
+            {
+                id: 3,
+                text: "SYSTEM ERROR 0xBRA1NR0T",
+                class: "game-3",
+                action: (element) => {
+                    element.classList.toggle('glitch');
+                    if (!element.classList.contains('glitch')) {
+                        setTimeout(() => element.classList.add('glitch'), 100);
+                    }
+                    moveRandomly(element);
+                }
+            },
+            {
+                id: 4,
+                text: "PROCESSING...",
+                class: "game-4 spin",
+                action: (element) => {
+                    element.classList.toggle('spin');
+                    if (!element.classList.contains('spin')) {
+                        setTimeout(() => element.classList.add('spin'), 100);
+                    }
+                    createBinaryRain();
+                }
+            },
+            {
+                id: 5,
+                text: "EXECUTE RANDOM()",
+                class: "game-5",
+                action: (element) => {
+                    element.style.transform = `rotate(${Math.random() * 360}deg) scale(${0.8 + Math.random()*0.4})`;
+                    createBinaryRain();
+                }
+            },
+            {
+                id: 6,
+                text: "NO OPERATION FOUND",
+                class: "game-6 shake",
+                action: (element) => {
+                    const colors = ['#00ff41', '#00ccff', '#00ff99', '#66ff00'];
+                    element.style.borderColor = colors[Math.floor(Math.random() * colors.length)];
+                    element.style.boxShadow = `0 0 15px ${colors[Math.floor(Math.random() * colors.length)]}`;
+                    moveRandomly(element);
+                }
+            }
+        ];
+        
+        // Initialize the game
+        function init() {
+            const gameContainer = document.getElementById('gameContainer');
+            
+            // Create a random game
+            const randomGame = games[Math.floor(Math.random() * games.length)];
+            const gameElement = document.createElement('div');
+            gameElement.className = `game ${randomGame.class}`;
+            gameElement.innerHTML = `<div class="game-content" data-text="${randomGame.text}">${randomGame.text}</div>`;
+            gameElement.dataset.id = randomGame.id;
+            
+            // Position randomly
+            positionRandomly(gameElement);
+            
+            // Add click/touch event
+            gameElement.addEventListener('click', () => {
+                randomGame.action(gameElement);
+            });
+            
+            gameElement.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                randomGame.action(gameElement);
+            });
+            
+            gameContainer.appendChild(gameElement);
+            
+            // Create binary rain periodically
+            setInterval(createBinaryRain, 1500);
+        }
+        
+        // Position element randomly on screen
+        function positionRandomly(element) {
+            const container = document.getElementById('gameContainer');
+            const maxX = container.clientWidth - element.offsetWidth;
+            const maxY = container.clientHeight - element.offsetHeight;
+            
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
+            
+            element.style.left = `${randomX}px`;
+            element.style.top = `${randomY}px`;
+        }
+        
+        // Move element to a random position
+        function moveRandomly(element) {
+            const container = document.getElementById('gameContainer');
+            const maxX = container.clientWidth - element.offsetWidth;
+            const maxY = container.clientHeight - element.offsetHeight;
+            
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
+            
+            element.style.transition = 'all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            element.style.left = `${randomX}px`;
+            element.style.top = `${randomY}px`;
+            
+            // Reset transition after animation completes
+            setTimeout(() => {
+                element.style.transition = '';
+            }, 500);
+        }
+        
+        // Create binary rain effect
+        function createBinaryRain() {
+            const container = document.getElementById('gameContainer');
+            
+            for (let i = 0; i < 20; i++) {
+                const binary = document.createElement('div');
+                binary.className = 'binary-rain';
+                binary.textContent = Math.random() > 0.5 ? '1' : '0';
+                binary.style.left = `${Math.random() * 100}%`;
+                binary.style.opacity = Math.random() * 0.5 + 0.3;
+                binary.style.animationDuration = `${Math.random() * 2 + 1}s`;
+                
+                container.appendChild(binary);
+                
+                setTimeout(() => {
+                    binary.remove();
+                }, 2000);
+            }
+        }
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+        
+        // Start the game immediately
+        window.onload = init;
     </script>
 </body>
-</html>                      
+</html>
