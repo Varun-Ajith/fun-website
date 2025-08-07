@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Brain Rot Terminal</title>
+    <title>Pointless Interaction</title>
     <style>
         * {
             margin: 0;
@@ -11,441 +11,400 @@
             box-sizing: border-box;
             user-select: none;
             touch-action: manipulation;
-            font-family: 'Courier New', monospace;
+            font-family: 'Segoe UI', system-ui, sans-serif;
         }
         
         body {
-            background: #0f0f23;
+            background: #0a0a12;
             height: 100vh;
             overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: #00ff41;
-            position: relative;
+            color: #f0f0f0;
         }
         
-        #matrix-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-        }
-        
-        .game-container {
+        .container {
             width: 100%;
             height: 100%;
             position: relative;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 2;
-            perspective: 1000px;
+            padding: 20px;
         }
         
-        .game {
-            position: absolute;
+        .interaction-area {
+            position: relative;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex;
             justify-content: center;
             align-items: center;
             text-align: center;
-            font-weight: bold;
-            border-radius: 4px;
-            padding: 20px;
+            font-weight: 500;
+            border-radius: 12px;
             overflow: hidden;
-            background: rgba(0, 20, 10, 0.7);
-            border: 1px solid #00ff41;
-            box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
-            text-shadow: 0 0 5px rgba(0, 255, 65, 0.8);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            max-width: 90%;
+            z-index: 10;
+            width: 300px;
+            height: 150px;
         }
         
-        .game-content {
+        .interaction-text {
             pointer-events: none;
-            z-index: 2;
-            font-size: 1.2rem;
+            font-size: 1.4rem;
+            transition: transform 0.3s ease;
         }
         
-        .game-1 {
-            width: 220px;
-            height: 80px;
-            transform: rotate(5deg);
-        }
-        
-        .game-2 {
-            width: 200px;
-            height: 120px;
-            transform: rotate(-3deg);
-        }
-        
-        .game-3 {
-            width: 240px;
-            height: 100px;
-            transform: rotate(7deg);
-        }
-        
-        .game-4 {
-            width: 180px;
-            height: 140px;
-            transform: rotate(-5deg);
-        }
-        
-        .game-5 {
-            width: 260px;
-            height: 90px;
-            transform: rotate(3deg);
-        }
-        
-        .game-6 {
-            width: 200px;
-            height: 160px;
-            transform: rotate(-8deg);
-        }
-        
-        .floating {
-            animation: float 3s ease-in-out infinite;
-        }
-        
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-        
-        .spin {
-            animation: spin 5s linear infinite;
-        }
-        
-        .shake {
-            animation: shake 0.5s infinite;
-        }
-        
-        .glitch {
-            position: relative;
-        }
-        
-        .glitch::before {
-            content: attr(data-text);
+        .particle {
             position: absolute;
-            left: -2px;
-            text-shadow: 2px 0 #ff00c1;
-            clip: rect(44px, 450px, 56px, 0);
-            animation: glitch-anim 5s infinite linear alternate-reverse;
-        }
-        
-        .glitch::after {
-            content: attr(data-text);
-            position: absolute;
-            left: 2px;
-            text-shadow: -2px 0 #00fff9;
-            clip: rect(44px, 450px, 56px, 0);
-            animation: glitch-anim2 5s infinite linear alternate-reverse;
-        }
-        
-        @keyframes float {
-            0% { transform: translateY(0) rotate(5deg); }
-            50% { transform: translateY(-15px) rotate(-3deg); }
-            100% { transform: translateY(0) rotate(5deg); }
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        @keyframes shake {
-            0% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-            100% { transform: translateX(0); }
-        }
-        
-        @keyframes glitch-anim {
-            0% { clip: rect(32px, 9999px, 28px, 0); }
-            5% { clip: rect(13px, 9999px, 80px, 0); }
-            10% { clip: rect(43px, 9999px, 74px, 0); }
-            15% { clip: rect(51px, 9999px, 60px, 0); }
-            20% { clip: rect(31px, 9999px, 14px, 0); }
-            25% { clip: rect(19px, 9999px, 28px, 0); }
-            30% { clip: rect(61px, 9999px, 78px, 0); }
-            35% { clip: rect(84px, 9999px, 7px, 0); }
-            40% { clip: rect(28px, 9999px, 99px, 0); }
-            45% { clip: rect(4px, 9999px, 40px, 0); }
-            50% { clip: rect(76px, 9999px, 52px, 0); }
-            55% { clip: rect(23px, 9999px, 24px, 0); }
-            60% { clip: rect(90px, 9999px, 99px, 0); }
-            65% { clip: rect(91px, 9999px, 58px, 0); }
-            70% { clip: rect(90px, 9999px, 73px, 0); }
-            75% { clip: rect(11px, 9999px, 52px, 0); }
-            80% { clip: rect(57px, 9999px, 81px, 0); }
-            85% { clip: rect(31px, 9999px, 20px, 0); }
-            90% { clip: rect(30px, 9999px, 1px, 0); }
-            95% { clip: rect(8px, 9999px, 60px, 0); }
-            100% { clip: rect(80px, 9999px, 20px, 0); }
-        }
-        
-        @keyframes glitch-anim2 {
-            0% { clip: rect(65px, 9999px, 100px, 0); }
-            5% { clip: rect(52px, 9999px, 74px, 0); }
-            10% { clip: rect(79px, 9999px, 85px, 0); }
-            15% { clip: rect(75px, 9999px, 5px, 0); }
-            20% { clip: rect(67px, 9999px, 61px, 0); }
-            25% { clip: rect(14px, 9999px, 79px, 0); }
-            30% { clip: rect(1px, 9999px, 66px, 0); }
-            35% { clip: rect(86px, 9999px, 30px, 0); }
-            40% { clip: rect(23px, 9999px, 98px, 0); }
-            45% { clip: rect(85px, 9999px, 72px, 0); }
-            50% { clip: rect(71px, 9999px, 75px, 0); }
-            55% { clip: rect(2px, 9999px, 48px, 0); }
-            60% { clip: rect(30px, 9999px, 16px, 0); }
-            65% { clip: rect(59px, 9999px, 50px, 0); }
-            70% { clip: rect(41px, 9999px, 62px, 0); }
-            75% { clip: rect(2px, 9999px, 82px, 0); }
-            80% { clip: rect(47px, 9999px, 73px, 0); }
-            85% { clip: rect(3px, 9999px, 27px, 0); }
-            90% { clip: rect(26px, 9999px, 55px, 0); }
-            95% { clip: rect(42px, 9999px, 97px, 0); }
-            100% { clip: rect(38px, 9999px, 49px, 0); }
-        }
-        
-        .binary-rain {
-            position: absolute;
-            font-family: 'Courier New', monospace;
-            color: rgba(0, 255, 65, 0.7);
-            font-size: 14px;
+            border-radius: 50%;
+            pointer-events: none;
             z-index: 1;
-            animation: fall linear forwards;
+            animation: fade-out 1s forwards;
         }
         
-        @keyframes fall {
-            to {
-                transform: translateY(100vh);
+        @keyframes fade-out {
+            0% { 
+                opacity: 1; 
+                transform: translate(0, 0) scale(1); 
+            }
+            100% { 
+                opacity: 0; 
+                transform: translate(var(--tx), var(--ty)) scale(0); 
             }
         }
         
-        @media (max-width: 600px) {
-            .game {
-                width: 80% !important;
-                max-width: 300px;
-                font-size: 0.9rem;
+        .counter {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.6);
+            z-index: 5;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+        
+        .title {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.6);
+            z-index: 5;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 400;
+        }
+        
+        .background-element {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(60, 120, 216, 0.1);
+            filter: blur(60px);
+            z-index: 0;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .interaction-area {
+                width: 280px;
+                height: 140px;
+                padding: 25px;
             }
             
-            .game-1, .game-2, .game-3, 
-            .game-4, .game-5, .game-6 {
-                height: auto;
-                min-height: 80px;
+            .interaction-text {
+                font-size: 1.3rem;
+            }
+        }
+        
+        @media (max-width: 617px) {
+            .interaction-area {
+                width: 240px;
+                height: 130px;
+                padding: 20px;
+            }
+            
+            .interaction-text {
+                font-size: 1.2rem;
+            }
+        }
+        
+        @media (max-width: 450px) {
+            .interaction-area {
+                width: 220px;
+                height: 120px;
+                padding: 18px;
+            }
+            
+            .interaction-text {
+                font-size: 1.1rem;
+            }
+            
+            .counter, .title {
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 368px) {
+            .interaction-area {
+                width: 200px;
+                height: 110px;
                 padding: 15px;
+            }
+            
+            .interaction-text {
+                font-size: 1rem;
+            }
+            
+            .counter, .title {
+                font-size: 0.85rem;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .interaction-area {
+                width: 340px;
+                height: 170px;
+            }
+            
+            .interaction-text {
+                font-size: 1.6rem;
             }
         }
     </style>
 </head>
 <body>
-    <canvas id="matrix-canvas"></canvas>
-    <div class="game-container" id="gameContainer">
-        <!-- Games will be dynamically added here -->
+    <div class="title">Pointless Interaction</div>
+    <div class="counter" id="counter">0</div>
+    
+    <div class="container">
+        <div class="interaction-area" id="interactionElement">
+            <div class="interaction-text" id="interactionText">Touch Me</div>
+        </div>
     </div>
     
     <script>
-        // Matrix background effect
-        const canvas = document.getElementById('matrix-canvas');
-        const ctx = canvas.getContext('2d');
-        
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        
-        const chars = "01010101010101010101010101";
-        const fontSize = 14;
-        const columns = canvas.width / fontSize;
-        
-        const drops = [];
-        for(let i = 0; i < columns; i++) {
-            drops[i] = 1;
-        }
-        
-        function drawMatrix() {
-            ctx.fillStyle = 'rgba(15, 15, 35, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            ctx.fillStyle = '#00ff41';
-            ctx.font = fontSize + 'px monospace';
-            
-            for(let i = 0; i < drops.length; i++) {
-                const text = chars[Math.floor(Math.random() * chars.length)];
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                
-                if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
-                
-                drops[i]++;
-            }
-        }
-        
-        setInterval(drawMatrix, 33);
-        
-        // List of brain rot mini-games
-        const games = [
+        // Interaction behaviors
+        const behaviors = [
             {
-                id: 1,
-                text: "CLICK TO INITIATE",
-                class: "game-1 floating",
-                action: (element) => {
-                    moveRandomly(element);
-                    createBinaryRain();
+                text: "Tap Here",
+                action: (element, textElement) => {
+                    moveToRandomPosition(element);
+                    createParticles(element, 12);
+                    textElement.textContent = "Again!";
                 }
             },
             {
-                id: 2,
-                text: "ACCESS DENIED",
-                class: "game-2 pulse",
-                action: (element) => {
-                    element.classList.toggle('shake');
-                    setTimeout(() => element.classList.toggle('shake'), 500);
-                    createBinaryRain();
+                text: "Why?",
+                action: (element, textElement) => {
+                    element.style.transform = `rotate(${Math.random() * 20 - 10}deg)`;
+                    element.style.background = `rgba(${Math.floor(Math.random() * 100)}, ${Math.floor(Math.random() * 150)}, ${Math.floor(Math.random() * 200)}, 0.15)`;
+                    textElement.style.transform = "scale(1.2)";
+                    setTimeout(() => textElement.style.transform = "scale(1)", 300);
+                    createParticles(element, 15);
                 }
             },
             {
-                id: 3,
-                text: "SYSTEM ERROR 0xBRA1NR0T",
-                class: "game-3",
-                action: (element) => {
-                    element.classList.toggle('glitch');
-                    if (!element.classList.contains('glitch')) {
-                        setTimeout(() => element.classList.add('glitch'), 100);
-                    }
-                    moveRandomly(element);
+                text: "Don't Stop",
+                action: (element, textElement) => {
+                    const newWidth = Math.max(200, Math.min(window.innerWidth - 40, Math.random() * 300 + 150));
+                    const newHeight = Math.max(100, Math.min(window.innerHeight - 100, Math.random() * 150 + 80));
+                    
+                    element.style.width = `${newWidth}px`;
+                    element.style.height = `${newHeight}px`;
+                    moveToRandomPosition(element);
+                    createParticles(element, 10);
+                    textElement.textContent = "Keep Going";
                 }
             },
             {
-                id: 4,
-                text: "PROCESSING...",
-                class: "game-4 spin",
-                action: (element) => {
-                    element.classList.toggle('spin');
-                    if (!element.classList.contains('spin')) {
-                        setTimeout(() => element.classList.add('spin'), 100);
-                    }
-                    createBinaryRain();
+                text: "Pointless",
+                action: (element, textElement) => {
+                    element.style.borderRadius = `${Math.random() * 50}%`;
+                    element.style.opacity = `${0.7 + Math.random() * 0.3}`;
+                    textElement.textContent = "Exactly";
+                    createParticles(element, 14);
                 }
             },
             {
-                id: 5,
-                text: "EXECUTE RANDOM()",
-                class: "game-5",
-                action: (element) => {
-                    element.style.transform = `rotate(${Math.random() * 360}deg) scale(${0.8 + Math.random()*0.4})`;
-                    createBinaryRain();
+                text: "Continue",
+                action: (element, textElement) => {
+                    element.style.transform = `scale(${0.85 + Math.random() * 0.3})`;
+                    moveToRandomPosition(element);
+                    createParticles(element, 12);
+                    textElement.textContent = "More!";
                 }
             },
             {
-                id: 6,
-                text: "NO OPERATION FOUND",
-                class: "game-6 shake",
-                action: (element) => {
-                    const colors = ['#00ff41', '#00ccff', '#00ff99', '#66ff00'];
-                    element.style.borderColor = colors[Math.floor(Math.random() * colors.length)];
-                    element.style.boxShadow = `0 0 15px ${colors[Math.floor(Math.random() * colors.length)]}`;
-                    moveRandomly(element);
+                text: "Why Not?",
+                action: (element, textElement) => {
+                    const colors = ['#ff6b6b', '#4ecdc4', '#ffbe0b', '#9b5de5', '#00bbf9'];
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    element.style.background = color;
+                    element.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+                    textElement.textContent = "Indeed";
+                    createParticles(element, 16);
                 }
             }
         ];
         
-        // Initialize the game
-        function init() {
-            const gameContainer = document.getElementById('gameContainer');
+        let interactionCount = 0;
+        let currentBehavior = 0;
+        const counterElement = document.getElementById('counter');
+        const interactionElement = document.getElementById('interactionElement');
+        const interactionText = document.getElementById('interactionText');
+        
+        // Create background elements
+        function createBackground() {
+            const container = document.querySelector('.container');
+            const sizes = [200, 300, 400];
+            const colors = [
+                'rgba(60, 120, 216, 0.1)',
+                'rgba(155, 93, 229, 0.1)',
+                'rgba(255, 107, 107, 0.1)',
+                'rgba(78, 205, 196, 0.1)'
+            ];
             
-            // Create a random game
-            const randomGame = games[Math.floor(Math.random() * games.length)];
-            const gameElement = document.createElement('div');
-            gameElement.className = `game ${randomGame.class}`;
-            gameElement.innerHTML = `<div class="game-content" data-text="${randomGame.text}">${randomGame.text}</div>`;
-            gameElement.dataset.id = randomGame.id;
-            
-            // Position randomly
-            positionRandomly(gameElement);
-            
-            // Add click/touch event
-            gameElement.addEventListener('click', () => {
-                randomGame.action(gameElement);
-            });
-            
-            gameElement.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                randomGame.action(gameElement);
-            });
-            
-            gameContainer.appendChild(gameElement);
-            
-            // Create binary rain periodically
-            setInterval(createBinaryRain, 1500);
+            for (let i = 0; i < 4; i++) {
+                const el = document.createElement('div');
+                el.className = 'background-element';
+                el.style.width = `${sizes[Math.floor(Math.random() * sizes.length)]}px`;
+                el.style.height = el.style.width;
+                el.style.background = colors[Math.floor(Math.random() * colors.length)];
+                el.style.top = `${Math.random() * 100}%`;
+                el.style.left = `${Math.random() * 100}%`;
+                container.appendChild(el);
+            }
         }
         
-        // Position element randomly on screen
-        function positionRandomly(element) {
-            const container = document.getElementById('gameContainer');
-            const maxX = container.clientWidth - element.offsetWidth;
-            const maxY = container.clientHeight - element.offsetHeight;
+        // Initialize the interaction
+        function init() {
+            createBackground();
+            currentBehavior = Math.floor(Math.random() * behaviors.length);
+            interactionText.textContent = behaviors[currentBehavior].text;
             
-            const randomX = Math.floor(Math.random() * maxX);
-            const randomY = Math.floor(Math.random() * maxY);
+            // Position element in center
+            positionCenter();
             
-            element.style.left = `${randomX}px`;
-            element.style.top = `${randomY}px`;
+            // Add event listeners
+            interactionElement.addEventListener('click', handleInteraction);
+            interactionElement.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                handleInteraction();
+            });
+        }
+        
+        // Handle interaction
+        function handleInteraction() {
+            interactionCount++;
+            counterElement.textContent = interactionCount;
+            behaviors[currentBehavior].action(interactionElement, interactionText);
+            
+            // Change to a different random behavior for next time
+            let newBehavior;
+            do {
+                newBehavior = Math.floor(Math.random() * behaviors.length);
+            } while (newBehavior === currentBehavior && behaviors.length > 1);
+            
+            currentBehavior = newBehavior;
+            setTimeout(() => {
+                interactionText.textContent = behaviors[currentBehavior].text;
+            }, 300);
+        }
+        
+        // Position element in center
+        function positionCenter() {
+            const container = document.querySelector('.container');
+            const containerWidth = container.clientWidth;
+            const containerHeight = container.clientHeight;
+            
+            const elementWidth = interactionElement.offsetWidth;
+            const elementHeight = interactionElement.offsetHeight;
+            
+            const centerX = (containerWidth - elementWidth) / 2;
+            const centerY = (containerHeight - elementHeight) / 2;
+            
+            interactionElement.style.left = `${centerX}px`;
+            interactionElement.style.top = `${centerY}px`;
         }
         
         // Move element to a random position
-        function moveRandomly(element) {
-            const container = document.getElementById('gameContainer');
-            const maxX = container.clientWidth - element.offsetWidth;
-            const maxY = container.clientHeight - element.offsetHeight;
+        function moveToRandomPosition(element) {
+            const container = document.querySelector('.container');
+            const containerWidth = container.clientWidth;
+            const containerHeight = container.clientHeight;
             
-            const randomX = Math.floor(Math.random() * maxX);
-            const randomY = Math.floor(Math.random() * maxY);
+            const elementWidth = element.offsetWidth;
+            const elementHeight = element.offsetHeight;
             
-            element.style.transition = 'all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-            element.style.left = `${randomX}px`;
-            element.style.top = `${randomY}px`;
+            const maxX = containerWidth - elementWidth;
+            const maxY = containerHeight - elementHeight;
             
-            // Reset transition after animation completes
+            // Ensure we don't go off screen
+            const safeX = Math.max(20, Math.min(maxX - 20, Math.random() * maxX));
+            const safeY = Math.max(20, Math.min(maxY - 20, Math.random() * maxY));
+            
+            element.style.transition = 'all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            element.style.left = `${safeX}px`;
+            element.style.top = `${safeY}px`;
+            
             setTimeout(() => {
                 element.style.transition = '';
             }, 500);
         }
         
-        // Create binary rain effect
-        function createBinaryRain() {
-            const container = document.getElementById('gameContainer');
+        // Create particles effect
+        function createParticles(element, count) {
+            const container = document.querySelector('.container');
+            const rect = element.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
             
-            for (let i = 0; i < 20; i++) {
-                const binary = document.createElement('div');
-                binary.className = 'binary-rain';
-                binary.textContent = Math.random() > 0.5 ? '1' : '0';
-                binary.style.left = `${Math.random() * 100}%`;
-                binary.style.opacity = Math.random() * 0.5 + 0.3;
-                binary.style.animationDuration = `${Math.random() * 2 + 1}s`;
+            const colors = ['#ff6b6b', '#4ecdc4', '#ffbe0b', '#9b5de5', '#00bbf9', '#ff9e6d'];
+            
+            for (let i = 0; i < count; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
                 
-                container.appendChild(binary);
+                const size = Math.random() * 12 + 4;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.backgroundColor = color;
+                
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * 80 + 40;
+                
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+                
+                particle.style.setProperty('--tx', `${tx}px`);
+                particle.style.setProperty('--ty', `${ty}px`);
+                
+                particle.style.left = `${centerX}px`;
+                particle.style.top = `${centerY}px`;
+                
+                container.appendChild(particle);
                 
                 setTimeout(() => {
-                    binary.remove();
-                }, 2000);
+                    particle.remove();
+                }, 1000);
             }
         }
         
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
-        
-        // Start the game immediately
+        // Start immediately
         window.onload = init;
     </script>
 </body>
